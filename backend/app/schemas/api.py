@@ -19,6 +19,11 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class SignupRequest(BaseModel):
+    email: str
+    password: str = Field(min_length=10)
+
+
 class UserOut(ORM):
     id: int
     email: str

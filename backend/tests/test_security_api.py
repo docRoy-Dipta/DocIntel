@@ -95,6 +95,55 @@ def test_role_permissions(client: Any, make_user: Any, rng: Any) -> None:
     assert {"login", "upload", "delete_document", "create_user"} <= actions
 
 
+def test_public_signup_creates_viewer_and_issues_token(client: Any) -> None:
+    r = client.post(
+        "/api/v1/auth/signup",
+        json={"email": "newuser@example.com", "password": "correct-horse-battery"},
+    )
+    assert r.status_code == 201, r.text
+    body = r.json()
+    assert body["user"]["role"] == "viewer"
+    assert body["user"]["email"] == "newuser@example.com"
+    assert body["access_token"] and body["token_type"] == "bearer"
+
+    # The issued token signs the user in immediately.
+    me = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {body['access_token']}"})
+    assert me.status_code == 200
+    assert me.json()["role"] == "viewer"
+
+
+def test_signup_always_creates_a_viewer(client: Any) -> None:
+    # Even if a client tries to send a role, self-registration cannot promote
+    # the account; role changes remain an admin-only operation.
+    r = client.post(
+        "/api/v1/auth/signup",
+        json={"email": "role@try.com", "password": "correct-horse-battery", "role": "admin"},
+    )
+    assert r.status_code == 201, r.text
+    assert r.json()["user"]["role"] == "viewer"
+
+
+def test_signup_duplicate_email_is_rejected(client: Any) -> None:
+    client.post(
+        "/api/v1/auth/signup",
+        json={"email": "dup@example.com", "password": "correct-horse-battery"},
+    )
+    r = client.post(
+        "/api/v1/auth/signup",
+        json={"email": "DUP@example.com", "password": "correct-horse-battery"},
+    )
+    assert r.status_code == 409, r.text
+    assert r.json()["error"]["code"] == "conflict"
+
+
+def test_signup_rejects_short_password(client: Any) -> None:
+    r = client.post(
+        "/api/v1/auth/signup",
+        json={"email": "short@example.com", "password": "short"},
+    )
+    assert r.status_code == 422, r.text
+
+
 def test_login_rate_limit(client: Any, make_user: Any) -> None:
     make_user("viewer")
     codes = [

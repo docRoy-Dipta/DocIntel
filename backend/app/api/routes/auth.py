@@ -16,7 +16,7 @@ from app.api.deps import (
 from app.core.config import Settings
 from app.core.security import create_access_token
 from app.db.models import User
-from app.schemas.api import LoginRequest, TokenOut, UserCreate, UserOut
+from app.schemas.api import LoginRequest, SignupRequest, TokenOut, UserCreate, UserOut
 from app.services import users
 from app.services.events import audit
 
@@ -45,6 +45,35 @@ def login(
         db,
         user_id=user.id,
         action="login",
+        entity_type="user",
+        entity_id=user.id,
+        ip=client_ip(request),
+    )
+    db.commit()
+    token = create_access_token(
+        subject=str(user.id),
+        role=user.role,
+        secret=settings.jwt_secret,
+        algorithm=settings.jwt_algorithm,
+        minutes=settings.access_token_minutes,
+    )
+    return TokenOut(access_token=token, user=UserOut.model_validate(user))
+
+
+@router.post("/auth/signup", response_model=TokenOut, status_code=201)
+def signup(
+    body: SignupRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(settings_dep),
+) -> TokenOut:
+    """Public self-registration. New accounts always start as ``viewer``;
+    granting any other role is an admin-only operation (``POST /users``)."""
+    user = users.create_user(db, body.email, body.password, "viewer")
+    audit(
+        db,
+        user_id=user.id,
+        action="signup",
         entity_type="user",
         entity_id=user.id,
         ip=client_ip(request),

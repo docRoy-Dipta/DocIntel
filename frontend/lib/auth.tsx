@@ -7,8 +7,9 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  can: (role: "reviewer" | "admin") => boolean;
+  can: (role: "reviewer" | "admin" | "viewer") => boolean;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -34,6 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(res.user);
   }, []);
 
+  const signup = useCallback(async (email: string, password: string) => {
+    const res = await api<{ access_token: string; user: User }>("/auth/signup", { method: "POST", json: { email, password } });
+    setToken(res.access_token);
+    setUser(res.user);
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     setUser(null);
@@ -41,11 +48,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const can = useCallback(
-    (role: "reviewer" | "admin") => (role === "admin" ? user?.role === "admin" : user?.role === "admin" || user?.role === "reviewer"),
+    (role: "reviewer" | "admin" | "viewer") => {
+      if (role === "admin") return user?.role === "admin";
+      if (role === "reviewer") return user?.role === "admin" || user?.role === "reviewer";
+      return !!user; // viewer = any authenticated user
+    },
     [user],
   );
 
-  const value = useMemo(() => ({ user, loading, login, logout, can }), [user, loading, login, logout, can]);
+  const value = useMemo(() => ({ user, loading, login, signup, logout, can }), [user, loading, login, signup, logout, can]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

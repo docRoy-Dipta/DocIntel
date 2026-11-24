@@ -287,7 +287,7 @@ def get_status(doc_id: uuid.UUID, _: CurrentUser = Depends(viewer), db: Session 
 def get_history(
     doc_id: uuid.UUID,
     limit: int = Query(500, ge=1, le=2000),
-    _: CurrentUser = Depends(viewer),
+    _: CurrentUser = Depends(reviewer),
     db: Session = Depends(get_db),
 ) -> list[ProcessingEvent]:
     _doc(db, doc_id)

@@ -96,7 +96,7 @@ def correct_field(
     logical_id: int,
     field_name: str,
     body: CorrectionIn,
-    user: CurrentUser = Depends(reviewer),
+    user: CurrentUser = Depends(viewer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(settings_dep),
 ) -> LogicalOut:
@@ -117,7 +117,7 @@ def correct_field(
 def correct_line_item(
     item_id: int,
     body: LineItemPatch,
-    user: CurrentUser = Depends(reviewer),
+    user: CurrentUser = Depends(viewer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(settings_dep),
 ) -> LogicalOut:
@@ -130,7 +130,7 @@ def correct_line_item(
 
 
 @router.post("/logical-documents/{logical_id}/approve", response_model=LogicalOut)
-def approve(logical_id: int, user: CurrentUser = Depends(reviewer), db: Session = Depends(get_db)) -> LogicalOut:
+def approve(logical_id: int, user: CurrentUser = Depends(viewer), db: Session = Depends(get_db)) -> LogicalOut:
     logical = corr.approve(db, user_id=user.id, logical_id=logical_id)
     db.commit()
     return build_logical(db, logical)

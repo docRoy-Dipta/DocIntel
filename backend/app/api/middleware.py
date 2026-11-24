@@ -45,7 +45,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                     key = f"user:{sub}"
                 except jwt.PyJWTError:
                     pass
-            if path.endswith("/auth/login") and request.method == "POST":
+            if path.endswith(("/auth/login", "/auth/signup")) and request.method == "POST":
                 if not self.limiter.hit(f"login:{ip}", settings.login_rate_limit_per_minute):
                     limit_error = _error(
                         429,

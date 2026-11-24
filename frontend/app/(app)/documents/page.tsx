@@ -39,6 +39,17 @@ function DocumentsInner() {
 
   const togglePick = (id: string) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id].slice(-2)));
 
+  async function deleteDocument(id: string, filename: string) {
+    if (!window.confirm(`Delete "${filename}"? This cannot be undone.`)) return;
+    try {
+      await api(`/documents/${id}`, { method: "DELETE" });
+      void list.reload();
+      setMessage("Document deleted.");
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Delete failed");
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
@@ -58,7 +69,7 @@ function DocumentsInner() {
         <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50">
-              <tr><th className="th w-8" /><th className="th">File</th><th className="th">Status</th><th className="th">Pages</th><th className="th">Invoices</th><th className="th">To review</th><th className="th">Size</th><th className="th">Uploaded</th></tr>
+              <tr><th className="th w-8" /><th className="th">File</th><th className="th">Status</th><th className="th">Pages</th><th className="th">Invoices</th><th className="th">To review</th><th className="th">Size</th><th className="th">Uploaded</th><th className="th">Actions</th></tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {list.data?.items.map((d) => (
@@ -74,9 +85,20 @@ function DocumentsInner() {
                   <td className="td tabular-nums">{d.needs_review ? <span className="font-medium text-amber-700">{d.needs_review}</span> : 0}</td>
                   <td className="td text-slate-500">{formatBytes(d.size_bytes)}</td>
                   <td className="td text-slate-500">{formatDate(d.created_at)}</td>
+                  <td className="td">
+                    {can("admin") && (
+                      <button
+                        className="text-xs font-semibold text-rose-600 hover:text-rose-800 underline"
+                        onClick={() => deleteDocument(d.id, d.original_filename)}
+                        aria-label={`Delete ${d.original_filename}`}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
-              {list.data?.items.length === 0 && <tr><td className="td py-8 text-center text-slate-500" colSpan={8}>No documents match.</td></tr>}
+              {list.data?.items.length === 0 && <tr><td className="td py-8 text-center text-slate-500" colSpan={9}>No documents match.</td></tr>}
             </tbody>
           </table>
         </div>

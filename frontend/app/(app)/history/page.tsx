@@ -54,6 +54,18 @@ function AuditLog() {
 export default function HistoryPage() {
   const { can } = useAuth();
   const [page, setPage] = useState(1);
+
+  if (!can("reviewer")) {
+    return (
+      <div className="space-y-4">
+        <h1 className="text-xl font-semibold">Processing history</h1>
+        <div className="rounded-lg border border-rose-200 bg-rose-50 px-6 py-8 text-center">
+          <p className="text-sm font-medium text-rose-800">You do not have permission to view processing history.</p>
+        </div>
+      </div>
+    );
+  }
+
   const docs = useAsync(() => api<Paginated<DocumentRow>>(`/documents?page=${page}&size=20`), [page]);
   return (
     <div className="space-y-4">

@@ -92,6 +92,12 @@ export default function LoginPage() {
               <input className="input mt-2" type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </label>
             <button className="btn-primary w-full py-3" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
+            <p className="text-center text-sm text-slate-500">
+              Don't have an account?{" "}
+              <a href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-800 underline">
+                Sign up
+              </a>
+            </p>
             <p className="text-center text-xs text-slate-400">Secure access to your document workspace</p>
           </form>
         </div>

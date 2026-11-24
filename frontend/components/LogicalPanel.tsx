@@ -26,7 +26,7 @@ export function LogicalPanel({ logical, onChange, onSelect, selectedField }: Pro
   const [reason, setReason] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const canEdit = can("reviewer");
+  const canEdit = can("viewer");
   const isSheet = logical.source === "spreadsheet";
 
   async function saveField(field: Field) {
