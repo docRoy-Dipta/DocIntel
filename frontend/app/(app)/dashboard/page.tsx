@@ -8,9 +8,9 @@ import { percent } from "@/lib/format";
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
-    <div className="card">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
+    <div className="card relative overflow-hidden border-l-4 border-l-orange-400">
+      <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
+      <p className="mt-2 text-3xl font-semibold tabular-nums text-indigo-950">{value}</p>
       {hint && <p className="text-xs text-slate-400">{hint}</p>}
     </div>
   );
@@ -24,8 +24,37 @@ export default function DashboardPage() {
   const max = Math.max(1, ...statuses.map(([, n]) => n));
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Dashboard</h1>
+    <div className="space-y-6">
+      <section className="relative isolate overflow-hidden rounded-[1.75rem] bg-indigo-950 px-6 py-8 text-white shadow-md sm:px-8 md:py-10">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-36 h-80 w-80 rounded-full border-[40px] border-orange-400/10 bg-white/[0.03]" />
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-1/3 h-px w-1/2 bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
+        <div className="relative flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-300">Your document workspace</p>
+            <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">A clearer view of every document.</h1>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-indigo-100 sm:text-base">
+              Follow each file from upload to verified details, with review work and evidence all in one place.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link className="btn-primary" href="/upload">Upload documents</Link>
+              <Link className="btn border border-white/25 bg-white/5 text-white hover:bg-white/10" href="/documents">Browse documents</Link>
+            </div>
+          </div>
+          <div className="relative flex min-w-48 items-center gap-4 rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur-sm">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-400/15 text-orange-200">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className="h-6 w-6" stroke="currentColor" strokeWidth="1.7">
+                <path d="M7 3.75h7l4 4v12.5H7a2 2 0 0 1-2-2v-12.5a2 2 0 0 1 2-2Z" />
+                <path d="M14 3.75v4h4M8.5 12h7M8.5 15.5h7" />
+              </svg>
+            </span>
+            <div>
+              <p className="text-xs font-medium text-indigo-200">Documents in workspace</p>
+              <p className="mt-1 text-3xl font-semibold tabular-nums">{data.documents_total}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat label="Documents" value={data.documents_total} hint={`${data.uploads_last_7_days} in the last 7 days`} />
         <Stat label="Awaiting review" value={data.review_queue} hint="invoices needing a human" />
