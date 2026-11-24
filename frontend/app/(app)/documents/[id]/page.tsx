@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LogicalPanel } from "@/components/LogicalPanel";
 import { PageViewer } from "@/components/PageViewer";
@@ -18,11 +18,13 @@ type Tab = "extraction" | "pages" | "history";
 
 export default function DocumentDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const { can } = useAuth();
   const [tab, setTab] = useState<Tab>("extraction");
   const [selected, setSelected] = useState<number | null>(null);
   const [focus, setFocus] = useState<{ page: number | null; bbox: Bbox; field: string | null }>({ page: null, bbox: null, field: null });
   const [message, setMessage] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const doc = useAsync(() => api<DocumentRow>(`/documents/${id}`), [id]);
   const status = useAsync(() => api<DocStatus>(`/documents/${id}/status`), [id], (s) => (s && ACTIVE_STATUSES.includes(s.status) ? 1500 : null));
@@ -59,6 +61,24 @@ export default function DocumentDetailPage() {
     URL.revokeObjectURL(url);
   }
 
+  async function deleteDocument() {
+    const filename = doc.data?.original_filename ?? "this document";
+    if (!window.confirm(`Permanently delete "${filename}" and all its extracted data? This cannot be undone.`)) {
+      return;
+    }
+
+    setMessage(null);
+    setDeleting(true);
+    try {
+      await api<void>(`/documents/${id}`, { method: "DELETE" });
+      router.replace("/documents");
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Could not delete the document.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (doc.loading && !doc.data) return <Spinner />;
   if (!doc.data) return <ErrorBox message={doc.error ?? "Document not found"} />;
   const d = doc.data;
@@ -73,6 +93,7 @@ export default function DocumentDetailPage() {
         <span className="text-sm text-slate-500">{d.kind.toUpperCase()} · {formatBytes(d.size_bytes)} · {d.page_count} page(s) · uploaded {formatDate(d.created_at)}</span>
         <div className="ml-auto flex gap-2">
           <button className="btn-secondary" onClick={download}>Download original</button>
+          {can("admin") && <button className="btn-danger" disabled={deleting} onClick={() => void deleteDocument()}>{deleting ? "Deleting…" : "Delete document"}</button>}
           {can("reviewer") && done && (
             <>
               <button className="btn-secondary" onClick={() => reprocess("resume")}>Retry failed</button>
