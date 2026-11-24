@@ -1,0 +1,67 @@
+{
+  "environment": {
+    "python": "3.12.3",
+    "cpus": 1,
+    "platform": "Linux-6.18.44-fc-v726-x86_64-with-glibc2.39",
+    "note": "single process, eager Celery (no broker), PostgreSQL 16 on the same machine"
+  },
+  "document": {
+    "pages": 1002,
+    "invoices": 334,
+    "size_mb": 3.36
+  },
+  "pipeline": {
+    "status": "completed",
+    "wall_seconds": 22.7,
+    "pages_per_second": 44.2,
+    "invoices_extracted": 334,
+    "invoices_expected": 334,
+    "rss_mb_before": 186,
+    "rss_mb_after": 214,
+    "peak_rss_mb": 219
+  },
+  "api_latency_with_1002_indexed_pages": {
+    "GET /documents": {
+      "n": 200,
+      "p50_ms": 4.7,
+      "p95_ms": 6.3,
+      "max_ms": 10.1
+    },
+    "GET /documents/{id}/status": {
+      "n": 200,
+      "p50_ms": 4.9,
+      "p95_ms": 6.4,
+      "max_ms": 7.8
+    },
+    "GET /invoices (filtered)": {
+      "n": 200,
+      "p50_ms": 6.2,
+      "p95_ms": 9.3,
+      "max_ms": 86.4
+    },
+    "GET /search keyword": {
+      "n": 100,
+      "p50_ms": 19.2,
+      "p95_ms": 22.3,
+      "max_ms": 31.0
+    },
+    "GET /search semantic": {
+      "n": 100,
+      "p50_ms": 8.7,
+      "p95_ms": 10.6,
+      "max_ms": 90.5
+    },
+    "GET /search hybrid": {
+      "n": 100,
+      "p50_ms": 21.5,
+      "p95_ms": 30.9,
+      "max_ms": 107.2
+    },
+    "GET /stats/dashboard": {
+      "n": 50,
+      "p50_ms": 8.8,
+      "p95_ms": 11.7,
+      "max_ms": 14.8
+    }
+  }
+}

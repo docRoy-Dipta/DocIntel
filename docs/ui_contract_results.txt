@@ -1,0 +1,42 @@
+/tmp/venv/lib/python3.12/site-packages/platformdirs/api.py:441: RuntimeDirWarning: XDG_RUNTIME_DIR is not set, falling back to /tmp/runtime-0
+  return Path(self.user_runtime_dir)
+PASS  frontend route / -> HTTP 200
+PASS  frontend route /login -> HTTP 200
+PASS  frontend route /dashboard -> HTTP 200
+PASS  frontend route /upload -> HTTP 200
+PASS  frontend route /documents -> HTTP 200
+PASS  frontend route /documents/abc -> HTTP 200
+PASS  frontend route /compare -> HTTP 200
+PASS  frontend route /search -> HTTP 200
+PASS  frontend route /history -> HTTP 200
+PASS  frontend sends security headers
+PASS  CORS preflight allows the frontend origin
+PASS  CORS preflight refuses a foreign origin
+PASS  CORS allows PATCH (needed for corrections)
+PASS  TypeScript interface User: all 4 required properties present in the real API response
+PASS  TypeScript interface DocumentRow: all 11 required properties present in the real API response
+PASS  TypeScript interface UploadItemResult: all 4 required properties present in the real API response
+PASS  TypeScript interface DocStatus: all 8 required properties present in the real API response
+PASS  TypeScript interface ProcEvent: all 8 required properties present in the real API response
+PASS  TypeScript interface Logical: all 20 required properties present in the real API response
+PASS  TypeScript interface Field: all 10 required properties present in the real API response
+PASS  TypeScript interface LineItem: all 10 required properties present in the real API response
+PASS  TypeScript interface ValidationIssue: all 6 required properties present in the real API response
+PASS  TypeScript interface Correction: all 9 required properties present in the real API response
+PASS  TypeScript interface PageInfo: all 9 required properties present in the real API response
+PASS  TypeScript interface PageDetail: all 11 required properties present in the real API response
+PASS  TypeScript interface InvoiceRow: all 16 required properties present in the real API response
+PASS  TypeScript interface SearchHit: all 7 required properties present in the real API response
+PASS  TypeScript interface ComparisonDetail: all 6 required properties present in the real API response
+PASS  TypeScript interface ComparePair: all 5 required properties present in the real API response
+PASS  TypeScript interface CompareItem: all 7 required properties present in the real API response
+PASS  TypeScript interface ComparisonRow: all 5 required properties present in the real API response
+PASS  TypeScript interface Dashboard: all 12 required properties present in the real API response
+PASS  TypeScript interface AuditEntry: all 8 required properties present in the real API response
+PASS  /documents returns the Paginated envelope
+PASS  /invoices returns the Paginated envelope
+PASS  /comparisons returns the Paginated envelope
+PASS  /documents/43e16588-4b98-4edd-9361-429adaba161c/pages returns the Paginated envelope
+
+CONTRACT OK: 20 interfaces verified, 21 parsed
+(logs kept in /tmp/docint-e2e-lr_2k79z)

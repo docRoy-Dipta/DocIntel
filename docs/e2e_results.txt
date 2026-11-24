@@ -1,0 +1,16 @@
+/tmp/venv/lib/python3.12/site-packages/platformdirs/api.py:441: RuntimeDirWarning: XDG_RUNTIME_DIR is not set, falling back to /tmp/runtime-0
+  return Path(self.user_runtime_dir)
+PASS  all four documents finished: {'bundle': 'completed', 'scan': 'completed', 'xlsx': 'needs_review', 'csv': 'completed'}
+PASS  bundle PDF was split into 8 invoices by separate worker processes
+PASS  every invoice number extracted correctly, in order
+PASS  spreadsheet and CSV records extracted
+PASS  scanned PDF went through the OCR queue
+PASS  document is mid-flight when the worker is killed (2/6 pages done)
+      worker killed with SIGKILL; starting a replacement worker
+PASS  document recovered after the crash -> completed
+PASS  all 6 invoices were recovered after the worker crash
+      recovery events: ["Stalled in 'processing'; re-queued (pages)"]
+      dashboard: {'documents_total': 5, 'by_status': {'uploaded': 0, 'queued': 0, 'validating': 0, 'processing': 0, 'analyzing': 0, 'completed': 4, 'needs_review': 1, 'failed': 0, 'rejected': 0}, 'pages_processed': 21, 'pages_ocr': 8}
+
+ALL CHECKS PASSED
+(logs kept in /tmp/docint-e2e-bwncmgba)

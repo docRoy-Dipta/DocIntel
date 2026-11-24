@@ -1,0 +1,84 @@
+AI-Powered Document Intelligence System - Windows Setup
+========================================================
+
+Recommended run method: Docker Compose. This starts PostgreSQL, Redis, the
+backend API, background workers, and the web frontend together.
+
+Prerequisites
+-------------
+1. Install and start Docker Desktop for Windows. Use its WSL 2 Linux
+   container engine. Wait until Docker Desktop reports that it is running.
+2. Open PowerShell.
+
+Commands
+--------
+Open PowerShell in the project folder. If needed, change the example path below
+to the folder where you cloned or extracted the project:
+
+    Set-Location 'C:\path\to\DocIntel'
+    docker --version
+    docker compose version
+    docker info
+
+`docker info` must show server details. If it reports that it cannot connect to
+the Docker API, start Docker Desktop and retry before continuing.
+
+Create the local environment file only if it does not already exist:
+
+    if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+    notepad .env
+
+In `.env`, set unique values for `POSTGRES_PASSWORD` and `ADMIN_PASSWORD`.
+Replace any `change-me` placeholders. Set `JWT_SECRET` to a random value of at
+least 32 characters. To generate one, run this command and copy its output into
+the `JWT_SECRET=` line in `.env`:
+
+    py -3.12 -c "import secrets; print(secrets.token_urlsafe(48))"
+
+Save `.env` and close Notepad. Keep this file private; it contains credentials.
+The default `LLM_PROVIDER=heuristic` works offline and needs no API key.
+
+Build and start all services:
+
+    docker compose up --build -d
+
+Check that services are running and wait until the API is healthy:
+
+    docker compose ps
+    Invoke-RestMethod http://localhost:8000/health/ready
+
+Open the application:
+
+    Start-Process 'http://localhost:3000'
+
+Sign in using `ADMIN_EMAIL` and `ADMIN_PASSWORD` from `.env`. The API
+documentation is at http://localhost:8000/docs.
+
+Useful commands
+---------------
+Show service status:
+
+    docker compose ps
+
+Follow service logs:
+
+    docker compose logs -f
+
+Follow only the API logs:
+
+    docker compose logs -f api
+
+Stop the services without deleting saved data:
+
+    docker compose down
+
+Start them again:
+
+    docker compose up -d
+
+Rebuild after changing project code or dependencies:
+
+    docker compose up --build -d
+
+`docker compose down` preserves database and uploaded-file volumes. Do not add
+`-v` unless you intentionally want to permanently delete that stored data.

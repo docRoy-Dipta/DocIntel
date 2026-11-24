@@ -1,0 +1,83 @@
+........................................................................ [ 39%]
+........................................................................ [ 79%]
+.....................................                                    [100%]
+=============================== warnings summary ===============================
+../../../../tmp/venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /tmp/venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_migrations.py::test_models_and_migrations_are_in_sync
+  /tmp/venv/lib/python3.12/site-packages/platformdirs/api.py:441: RuntimeDirWarning: XDG_RUNTIME_DIR is not set, falling back to /tmp/runtime-0
+    return Path(self.user_runtime_dir)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.12.3-final-0 ________________
+
+Name                            Stmts   Miss  Cover
+---------------------------------------------------
+app/__init__.py                     1      0   100%
+app/ai/__init__.py                  0      0   100%
+app/ai/embeddings.py               55      4    93%
+app/ai/extractor.py                54      1    98%
+app/ai/gemini.py                   60      1    98%
+app/ai/grounding.py                66     15    77%
+app/ai/heuristic.py               122      5    96%
+app/ai/schemas.py                  39      0   100%
+app/ai/scoring.py                  92      0   100%
+app/api/__init__.py                 0      0   100%
+app/api/deps.py                    49      1    98%
+app/api/middleware.py              52      1    98%
+app/api/routes/auth.py             37      4    89%
+app/api/routes/documents.py       164      9    95%
+app/api/routes/misc.py             73     17    77%
+app/api/routes/review.py           56      5    91%
+app/core/__init__.py                0      0   100%
+app/core/config.py                 67      5    93%
+app/core/errors.py                 26      0   100%
+app/core/logging.py                22      7    68%
+app/core/ratelimit.py              36      7    81%
+app/core/security.py               30      0   100%
+app/db/__init__.py                  0      0   100%
+app/db/base.py                     30      0   100%
+app/db/models.py                  202      0   100%
+app/devtools/__init__.py            0      0   100%
+app/devtools/synthetic.py         210     11    95%
+app/domain/__init__.py              0      0   100%
+app/domain/dates.py                37      0   100%
+app/domain/matching.py            166      3    98%
+app/domain/money.py                74      4    95%
+app/domain/validation.py          116      4    97%
+app/main.py                        61      4    93%
+app/processors/__init__.py          0      0   100%
+app/processors/classify.py         68      2    97%
+app/processors/files.py           154     11    93%
+app/processors/imaging.py          81     27    67%
+app/processors/layout.py           61      1    98%
+app/processors/ocr.py              56      4    93%
+app/processors/pdfpages.py         69      7    90%
+app/processors/spreadsheet.py     232     22    91%
+app/repositories/__init__.py        0      0   100%
+app/schemas/api.py                181      0   100%
+app/services/__init__.py            0      0   100%
+app/services/comparison.py        110      7    94%
+app/services/corrections.py        77      9    88%
+app/services/effective.py          99      9    91%
+app/services/events.py              9      0   100%
+app/services/extraction.py         80      9    89%
+app/services/ingest.py             42      0   100%
+app/services/pipeline.py          329     39    88%
+app/services/runtime.py            23      0   100%
+app/services/search.py            144      8    94%
+app/services/stats.py              25      0   100%
+app/services/storage.py            57      3    95%
+app/services/users.py              37      7    81%
+app/services/validation.py         57      3    95%
+app/tasks/__init__.py               0      0   100%
+app/tasks/celery_app.py            12      0   100%
+app/tasks/dispatch.py              35      4    89%
+app/tasks/tasks.py                121     22    82%
+---------------------------------------------------
+TOTAL                            4156    302    93%
+Coverage JSON written to file /home/claude/di/docs/coverage.json
+181 passed, 2 warnings in 42.58s

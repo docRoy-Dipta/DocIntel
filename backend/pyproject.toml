@@ -1,0 +1,102 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "document-intelligence-backend"
+version = "0.1.0"
+description = "Backend for the AI-Powered Document Intelligence System"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "sqlalchemy>=2.0.30",
+    "psycopg[binary]>=3.2",
+    "alembic>=1.13",
+    "pgvector>=0.3",
+    "celery[redis]>=5.4",
+    "redis>=5.0",
+    "pymupdf>=1.24",
+    "pytesseract>=0.3.10",
+    "pillow>=10.4",
+    "numpy>=1.26",
+    "openpyxl>=3.1",
+    "xlrd>=2.0.1",
+    "defusedxml>=0.7",
+    "python-multipart>=0.0.9",
+    "pyjwt>=2.9",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pre-commit>=3.8",
+    "xlwt>=1.3",
+    "fakeredis>=2.23",
+    # Lets the test-suite start a throw-away PostgreSQL+pgvector. On Windows use TEST_DATABASE_URL instead.
+    "pgserver>=0.1.4; platform_system != 'Windows'",
+]
+# Optional: real semantic embeddings (large download). Enable with EMBEDDER=sentence-transformers.
+semantic = ["sentence-transformers>=3.0"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = ["S101"]  # `assert` is used for type narrowing, never for validation of untrusted input
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (unused imports, undefined names)
+    "I",   # import sorting
+    "B",   # flake8-bugbear (likely bugs)
+    "UP",  # pyupgrade (modern Python syntax)
+    "S",   # flake8-bandit (security checks)
+    "SIM", # flake8-simplify
+    "C4",  # flake8-comprehensions
+]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection style puts Depends()/Query() in argument defaults on purpose.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.File", "fastapi.Security"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S108", "S311", "S603", "E741", "E731", "B023", "SIM"]  # test-only idioms
+"scripts/**" = ["E501", "S311", "S603", "UP031", "SIM105", "C408", "S607"]  # one-off measurement/ops scripts
+"app/devtools/**" = ["S311", "E731"]  # synthetic data uses a seeded, non-cryptographic RNG on purpose
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["app", "tests"]
+
+# Third-party libraries that ship no type information.
+[[tool.mypy.overrides]]
+module = ["pymupdf.*", "xlwt.*", "xlrd.*", "pgserver.*", "sentence_transformers.*", "pytesseract.*", "fakeredis.*", "celery.*", "kombu.*", "openpyxl.*"]
+ignore_missing_imports = true
+
+# PyMuPDF and Celery are untyped: calls into them (and their decorators) cannot be checked.
+[[tool.mypy.overrides]]
+module = ["app.processors.*", "app.devtools.*", "app.services.pipeline", "app.tasks.*", "tests.*"]
+disallow_untyped_calls = false
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration: needs real PostgreSQL/Redis (Docker Compose services)",
+]
+
+[tool.coverage.run]
+source = ["app"]

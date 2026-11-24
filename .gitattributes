@@ -1,0 +1,12 @@
+# Normalize line endings to LF everywhere (important on Windows)
+* text=auto eol=lf
+
+# Binary files: never touch
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tif binary
+*.tiff binary
+*.xlsx binary
+*.xls binary
