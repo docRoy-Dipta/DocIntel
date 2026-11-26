@@ -130,7 +130,6 @@ def client(db_url: str) -> Iterator[TestClient]:
 PASSWORD = "correct-horse-battery"
 
 
-
 @pytest.fixture
 def make_user(
     db_url: str,
@@ -169,9 +168,7 @@ def make_user(
         )
         assert resp.status_code == 200, resp.text
 
-        return {
-            "Authorization": f"Bearer {resp.json()['access_token']}"
-        }
+        return {"Authorization": f"Bearer {resp.json()['access_token']}"}
 
     return _make
 

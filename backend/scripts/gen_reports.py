@@ -67,7 +67,7 @@ def testing_report() -> str:
         "## How to reproduce",
         "",
         "```bash",
-        "cd backend && pip install -e \".[dev]\"",
+        'cd backend && pip install -e ".[dev]"',
         "ruff check . && ruff format --check . && mypy        # static checks",
         "pytest -q --cov=app                                  # test-suite (real PostgreSQL + pgvector, Celery in eager mode)",
         "python scripts/e2e_real_stack.py                     # real Redis + separate worker process + SIGKILL crash test",
@@ -91,7 +91,9 @@ def testing_report() -> str:
     ]
     for mod in sorted(per):
         v = per[mod]
-        L.append(f"| `{mod.replace('.', '/')}.py` | {v['passed']} | {v['failed']} | {v['skipped']} | {CATEGORIES.get(mod, '')} |")
+        L.append(
+            f"| `{mod.replace('.', '/')}.py` | {v['passed']} | {v['failed']} | {v['skipped']} | {CATEGORIES.get(mod, '')} |"
+        )
     L += [
         "",
         "### Coverage by package",
@@ -126,7 +128,9 @@ def testing_report() -> str:
         "Real Redis broker, real PostgreSQL, a **separate Celery worker process**, the API server over HTTP, and a `SIGKILL` of the worker in the middle of OCR.",
         "",
         "```text",
-        "\n".join(ln for ln in e2e.splitlines() if ln.startswith(("PASS", "FAIL", "ALL", "      ")) and "RuntimeDir" not in ln),
+        "\n".join(
+            ln for ln in e2e.splitlines() if ln.startswith(("PASS", "FAIL", "ALL", "      ")) and "RuntimeDir" not in ln
+        ),
         "```",
         "",
         "## Performance (`scripts/perf_test.py`)",
@@ -212,10 +216,17 @@ def evaluation_report() -> str:
     for cond, v in ev["extraction_by_condition"].items():
         m = v["fields_micro_avg"]
         li = v["line_items"]
-        L.append(f"| {cond} | {v['documents']} | {v['invoices']} | {v['pages']} | {pct(m['accuracy'])} | {pct(m['precision'])} | {pct(m['recall'])} | "
-                 f"{pct(m['f1'])} | {pct(li['f1']) if isinstance(li, dict) else 'n/a'} | {v['invoices_fully_correct']} |")
-    L += ["", "Per-field accuracy:", "", "| Condition | " + " | ".join(next(iter(ev["extraction_by_condition"].values()))["fields"]) + " |",
-          "|---|" + "---:|" * 8]
+        L.append(
+            f"| {cond} | {v['documents']} | {v['invoices']} | {v['pages']} | {pct(m['accuracy'])} | {pct(m['precision'])} | {pct(m['recall'])} | "
+            f"{pct(m['f1'])} | {pct(li['f1']) if isinstance(li, dict) else 'n/a'} | {v['invoices_fully_correct']} |"
+        )
+    L += [
+        "",
+        "Per-field accuracy:",
+        "",
+        "| Condition | " + " | ".join(next(iter(ev["extraction_by_condition"].values()))["fields"]) + " |",
+        "|---|" + "---:|" * 8,
+    ]
     for cond, v in ev["extraction_by_condition"].items():
         L.append(f"| {cond} | " + " | ".join(pct(f["accuracy"]) for f in v["fields"].values()) + " |")
     L += [
@@ -229,8 +240,11 @@ def evaluation_report() -> str:
     ]
     for cond, v in ev["extraction_by_condition"].items():
         r = v["review_flagging"]
-        L.append(f"| {cond} | {r['wrong_invoices']} | {r['wrong_and_sent_to_review']}" + (f" ({pct(r['review_recall'])})" if r["review_recall"] is not None else " (n/a)")
-                 + f" | {r['correct_but_sent_to_review']} ({pct(r['unnecessary_review_rate'])}) |")
+        L.append(
+            f"| {cond} | {r['wrong_invoices']} | {r['wrong_and_sent_to_review']}"
+            + (f" ({pct(r['review_recall'])})" if r["review_recall"] is not None else " (n/a)")
+            + f" | {r['correct_but_sent_to_review']} ({pct(r['unnecessary_review_rate'])}) |"
+        )
     L += [
         "",
         "Review is triggered by validation errors/warnings, low confidence (OCR confidence × grounding × format checks), inferred values, dropped (ungrounded) values and damaged files.",
@@ -274,7 +288,9 @@ def evaluation_report() -> str:
     ]
     for cond, v in ev["extraction_by_condition"].items():
         s = v["seconds_per_document"]
-        L.append(f"| {cond} | {s['mean']} | {s['median']} | {s['max']} | {v['seconds_per_page_mean']} | {v['final_status_counts']} |")
+        L.append(
+            f"| {cond} | {s['mean']} | {s['median']} | {s['max']} | {v['seconds_per_page_mean']} | {v['final_status_counts']} |"
+        )
     o = ev["document_outcomes_extraction_set"]
     L += [
         "",
