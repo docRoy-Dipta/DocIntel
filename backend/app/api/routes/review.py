@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import CurrentUser, get_db, settings_dep, viewer
+from app.api.deps import CurrentUser, get_db, reviewer, settings_dep, viewer
 from app.core.config import Settings
 from app.core.errors import NotFoundError
 from app.db.models import Correction, Document, LogicalDocument, ValidationResult
@@ -96,7 +96,7 @@ def correct_field(
     logical_id: int,
     field_name: str,
     body: CorrectionIn,
-    user: CurrentUser = Depends(viewer),
+    user: CurrentUser = Depends(reviewer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(settings_dep),
 ) -> LogicalOut:
@@ -117,7 +117,7 @@ def correct_field(
 def correct_line_item(
     item_id: int,
     body: LineItemPatch,
-    user: CurrentUser = Depends(viewer),
+    user: CurrentUser = Depends(reviewer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(settings_dep),
 ) -> LogicalOut:
@@ -130,7 +130,7 @@ def correct_line_item(
 
 
 @router.post("/logical-documents/{logical_id}/approve", response_model=LogicalOut)
-def approve(logical_id: int, user: CurrentUser = Depends(viewer), db: Session = Depends(get_db)) -> LogicalOut:
+def approve(logical_id: int, user: CurrentUser = Depends(reviewer), db: Session = Depends(get_db)) -> LogicalOut:
     logical = corr.approve(db, user_id=user.id, logical_id=logical_id)
     db.commit()
     return build_logical(db, logical)

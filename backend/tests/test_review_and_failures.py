@@ -93,6 +93,11 @@ def test_viewer_cannot_correct_or_upload(client: Any, make_user: Any, upload: Up
     viewer = make_user("viewer")
     r = client.patch(f"/api/v1/logical-documents/{logical['id']}/fields/tax", headers=viewer, json={"value": "1"})
     assert r.status_code == 403
+    item_id = logical["line_items"][0]["id"]
+    r = client.patch(f"/api/v1/line-items/{item_id}", headers=viewer, json={"amount": "1.00"})
+    assert r.status_code == 403
+    r = client.post(f"/api/v1/logical-documents/{logical['id']}/approve", headers=viewer)
+    assert r.status_code == 403
     r = client.post(
         "/api/v1/documents",
         headers=viewer,
