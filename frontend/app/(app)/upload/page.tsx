@@ -68,7 +68,7 @@ export default function UploadPage() {
     };
   }, [idsKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!can("reviewer")) return <ErrorBox message="Your role (viewer) cannot upload documents." />;
+  if (!can("viewer")) return <ErrorBox message="Your role (viewer) cannot upload documents." />;
 
   return (
     <div className="space-y-4">

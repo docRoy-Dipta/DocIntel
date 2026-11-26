@@ -49,7 +49,7 @@ def _doc(db: Session, doc_id: uuid.UUID) -> Document:
 def upload_documents(
     request: Request,
     files: list[UploadFile] = File(...),
-    user: CurrentUser = Depends(reviewer),
+    user: CurrentUser = Depends(viewer),
     db: Session = Depends(get_db),
     settings: Settings = Depends(settings_dep),
 ) -> Any:
