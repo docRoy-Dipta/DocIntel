@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { Card, ErrorBox, Spinner, StatusBadge } from "@/components/ui";
+import { Card, CardHeader, ErrorBox, Spinner, StatusBadge } from "@/components/ui";
 import { api, type ComparisonDetail, type ComparisonRow, type DocumentRow, type Paginated } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { FIELD_LABELS, formatDate } from "@/lib/format";
@@ -89,7 +89,11 @@ function CompareInner() {
             </div>
           </Card>
           {result.pairs.map((p) => (
-            <Card key={p.pair_index} title={`Pair ${p.pair_index + 1}`} actions={<StatusBadge status={p.status} />}>
+            <Card key={p.pair_index}>
+            <CardHeader>
+              <span>Pair {p.pair_index + 1}</span>
+              <StatusBadge status={p.status} />
+            </CardHeader>
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-slate-200">
                   <thead className="bg-slate-50"><tr><th className="th">Field</th><th className="th">Left</th><th className="th">Right</th><th className="th">Verdict</th><th className="th">Rule applied</th></tr></thead>

@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { Card, ErrorBox, Spinner, StatusBadge } from "@/components/ui";
+import { Card, CardHeader, CardContent, ErrorBox, Spinner, StatusBadge } from "@/components/ui";
 import { api, type Dashboard } from "@/lib/api";
 import { useAsync } from "@/lib/hooks";
 import { percent } from "@/lib/format";
 
 function Stat({ label, value, hint }: { label: string; value: string | number; hint?: string }) {
   return (
-    <div className="card relative overflow-hidden border-l-4 border-l-orange-400">
-      <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
-      <p className="mt-2 text-3xl font-semibold tabular-nums text-indigo-950">{value}</p>
-      {hint && <p className="text-xs text-slate-400">{hint}</p>}
-    </div>
+    <Card className="relative overflow-hidden border-l-4 border-l-[#2d5a82]">
+      <CardContent className="space-y-2">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6b7280]">{label}</p>
+        <p className="mt-2 text-3xl font-semibold tabular-nums text-[#141923]">{value}</p>
+        {hint && <p className="text-xs text-[#6b7280]">{hint}</p>}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -25,19 +27,23 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <section className="relative isolate overflow-hidden rounded-[1.75rem] bg-indigo-950 px-6 py-8 text-white shadow-md sm:px-8 md:py-10">
-        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-36 h-80 w-80 rounded-full border-[40px] border-orange-400/10 bg-white/[0.03]" />
-        <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-1/3 h-px w-1/2 bg-gradient-to-r from-transparent via-orange-300/40 to-transparent" />
+      <section className="relative isolate overflow-hidden rounded-[1.75rem] bg-[#2d5a82] px-6 py-8 text-white shadow-md sm:px-8 md:py-10">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-36 h-80 w-80 rounded-full border-[40px] border-[#f47260]/10 bg-white/[0.03]" />
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-0 right-1/3 h-px w-1/2 bg-gradient-to-r from-transparent via-[#f47260]/40 to-transparent" />
         <div className="relative flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-300">Your document workspace</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#f1f3f6]">Your document workspace</p>
             <h1 className="mt-3 font-display text-4xl leading-tight sm:text-5xl">A clearer view of every document.</h1>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-indigo-100 sm:text-base">
+            <p className="mt-4 max-w-xl text-sm leading-6 text-[#dbe3f0] sm:text-base">
               Follow each file from upload to verified details, with review work and evidence all in one place.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link className="btn-primary" href="/upload">Upload documents</Link>
-              <Link className="btn border border-white/25 bg-white/5 text-white hover:bg-white/10" href="/documents">Browse documents</Link>
+              <Link href="/upload" className="inline-flex items-center justify-center gap-2 rounded-[0.6rem] bg-[#2d5a82] text-white hover:bg-[#244a6b] active:bg-[#1e3d58] shadow-sm hover:shadow-md font-medium transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#2d5a82] focus-visible:ring-offset-2 px-4 py-2.5 text-sm w-full lg:w-auto">
+                Upload documents
+              </Link>
+              <Link href="/documents" className="inline-flex items-center justify-center gap-2 rounded-[0.6rem] border border-[#d8dce4] bg-white text-[#141923] hover:bg-[#f5f7fa] font-medium transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-[#2d5a82] focus-visible:ring-offset-2 px-4 py-2.5 text-sm w-full lg:w-auto">
+                Browse documents
+              </Link>
             </div>
           </div>
           <div className="relative flex min-w-48 items-center gap-4 rounded-2xl border border-white/15 bg-white/[0.07] p-5 backdrop-blur-sm">
@@ -48,7 +54,7 @@ export default function DashboardPage() {
               </svg>
             </span>
             <div>
-              <p className="text-xs font-medium text-indigo-200">Documents in workspace</p>
+              <p className="text-xs font-medium text-[#f1f3f6]">Documents in workspace</p>
               <p className="mt-1 text-3xl font-semibold tabular-nums">{data.documents_total}</p>
             </div>
           </div>
@@ -67,50 +73,70 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card title="Documents by status">
-          {statuses.length === 0 ? (
-            <p className="text-sm text-slate-500">Nothing uploaded yet. <Link className="text-indigo-600 underline" href="/upload">Upload documents</Link></p>
-          ) : (
-            <ul className="space-y-2">
-              {statuses.map(([status, n]) => (
-                <li key={status} className="flex items-center gap-3">
-                  <Link href={`/documents?status=${status}`} className="w-32"><StatusBadge status={status} /></Link>
-                  <div className="h-3 flex-1 overflow-hidden rounded bg-slate-100"><div className="h-full bg-indigo-400" style={{ width: `${(n / max) * 100}%` }} /></div>
-                  <span className="w-8 text-right text-sm tabular-nums">{n}</span>
-                </li>
+        <Card>
+          <CardHeader className="flex items-center justify-between">
+            <span className="font-semibold text-[#141923]">Documents by status</span>
+            <Link href="/upload" className="text-sm font-medium text-[#2d5a82] hover:underline">Upload documents</Link>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {statuses.length === 0 ? (
+              <p className="text-sm text-[#6b7280]">Nothing uploaded yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {statuses.map(([status, n]) => (
+                  <li key={status} className="flex items-center gap-3">
+                    <Link href={`/documents?status=${status}`} className="w-32"><StatusBadge status={status} /></Link>
+                    <div className="h-3 flex-1 overflow-hidden rounded bg-[#f1f3f6]"><div className="h-full bg-[#2d5a82]" style={{ width: `${(n / max) * 100}%` }} /></div>
+                    <span className="w-8 text-right text-sm tabular-nums">{n}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <span className="font-semibold text-[#141923]">Recent failures</span>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {data.recent_failures.length === 0 ? (
+              <p className="text-sm text-[#2e7d4f]">No failures. 🎉</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {data.recent_failures.map((f) => (
+                  <li key={f.id}>
+                    <Link href={`/documents/${f.id}`} className="font-medium text-[#2d5a82] hover:underline">{f.filename}</Link> <StatusBadge status={f.status} />
+                    <p className="text-xs text-[#6b7280]">{f.error}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <span className="font-semibold text-[#141923]">Validation outcome (invoices & receipts)</span>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex flex-wrap gap-3">
+              {Object.entries(data.validation_status_counts).map(([k, n]) => (
+                <div key={k} className="flex items-center gap-2"><StatusBadge status={k} /><span className="tabular-nums">{n}</span></div>
               ))}
-            </ul>
-          )}
+              {Object.keys(data.validation_status_counts).length === 0 && <p className="text-sm text-[#6b7280]">No data yet.</p>}
+            </div>
+          </CardContent>
         </Card>
-        <Card title="Recent failures">
-          {data.recent_failures.length === 0 ? (
-            <p className="text-sm text-slate-500">No failures. 🎉</p>
-          ) : (
-            <ul className="space-y-2 text-sm">
-              {data.recent_failures.map((f) => (
-                <li key={f.id}>
-                  <Link href={`/documents/${f.id}`} className="font-medium text-indigo-700 hover:underline">{f.filename}</Link>{" "}
-                  <StatusBadge status={f.status} />
-                  <p className="text-xs text-slate-500">{f.error}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Card>
-        <Card title="Validation outcome (invoices & receipts)">
-          <div className="flex flex-wrap gap-3">
-            {Object.entries(data.validation_status_counts).map(([k, n]) => (
-              <div key={k} className="flex items-center gap-2"><StatusBadge status={k} /><span className="tabular-nums">{n}</span></div>
-            ))}
-            {Object.keys(data.validation_status_counts).length === 0 && <p className="text-sm text-slate-500">No data yet.</p>}
-          </div>
-        </Card>
-        <Card title="Shortcuts">
-          <div className="flex flex-wrap gap-2">
-            <Link className="btn-primary" href="/documents?status=needs_review">Review queue</Link>
-            <Link className="btn-secondary" href="/upload">Upload</Link>
-            <Link className="btn-secondary" href="/search">Search</Link>
-          </div>
+        <Card>
+          <CardHeader>
+            <span className="font-semibold text-[#141923]">Shortcuts</span>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex flex-wrap gap-2">
+              <Link className="btn-primary" href="/documents?status=needs_review">Review queue</Link>
+              <Link className="btn-secondary" href="/upload">Upload</Link>
+              <Link className="btn-secondary" href="/search">Search</Link>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </div>

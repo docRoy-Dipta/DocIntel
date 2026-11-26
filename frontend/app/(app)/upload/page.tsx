@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Card, ErrorBox, ProgressBar, StatusBadge } from "@/components/ui";
+import { Card, CardHeader, ErrorBox, ProgressBar, StatusBadge } from "@/components/ui";
 import {
   ACTIVE_STATUSES, ALLOWED_EXTENSIONS, MAX_UPLOAD_MB, api, uploadFiles,
   type DocStatus, type UploadItemResult,
@@ -87,10 +87,11 @@ export default function UploadPage() {
       <ErrorBox message={error} />
 
       {queued.length > 0 && (
-        <Card
-          title={`Ready to upload (${queued.length})`}
-          actions={<div className="flex gap-2"><button className="btn-secondary" onClick={() => setQueued([])}>Clear</button><button className="btn-primary" disabled={progress !== null} onClick={send}>Upload</button></div>}
-        >
+        <Card>
+        <CardHeader>
+          <span>Ready to upload ({queued.length})</span>
+          <div className="flex gap-2"><button className="btn-secondary" onClick={() => setQueued([])}>Clear</button><button className="btn-primary" disabled={progress !== null} onClick={send}>Upload</button></div>
+        </CardHeader>
           <ul className="divide-y divide-slate-100 text-sm">
             {queued.map((f, i) => {
               const problem = validateLocally(f);
@@ -109,7 +110,10 @@ export default function UploadPage() {
       )}
 
       {results.length > 0 && (
-        <Card title="Processing">
+        <Card>
+        <CardHeader>
+          <span>Processing</span>
+        </CardHeader>
           <ul className="divide-y divide-slate-100 text-sm">
             {results.map((r, i) => {
               const st = r.document_id ? statuses[r.document_id] : undefined;
