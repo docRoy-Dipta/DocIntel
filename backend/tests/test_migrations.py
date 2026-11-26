@@ -28,7 +28,7 @@ def test_models_and_migrations_are_in_sync(migrated_db: str) -> None:
 
 def test_downgrade_and_upgrade_roundtrip(
     database_url: str,
-    tmp_path_factory,
+    tmp_path_factory: pytest.TempPathFactory,
 ) -> None:
     if os.environ.get("TEST_DATABASE_URL"):
         pytest.skip("Roundtrip migration test requires a disposable PostgreSQL server.")
@@ -40,7 +40,7 @@ def test_downgrade_and_upgrade_roundtrip(
 
     if os.environ.get("TEST_DATABASE_URL"):
         return  # do not run destructive downgrade on a shared database
-    server = pgserver.get_server(tmp_path_factory.mktemp("pg2"), cleanup_mode="stop")  # type: ignore[attr-defined]
+    server = pgserver.get_server(tmp_path_factory.mktemp("pg2"), cleanup_mode="stop")
     url = server.get_uri().replace("postgresql://", "postgresql+psycopg://")
     assert alembic(url, "upgrade", "head").returncode == 0
     assert "ix_pages_fts" in server.psql("select indexname from pg_indexes where tablename='pages';")
