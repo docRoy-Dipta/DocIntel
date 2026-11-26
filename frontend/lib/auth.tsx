@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { api, getToken, setToken, type User } from "./api";
 
 interface AuthState {
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthState | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (!getToken()) {
@@ -33,7 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await api<{ access_token: string; user: User }>("/auth/login", { method: "POST", json: { email, password } });
     setToken(res.access_token);
     setUser(res.user);
-  }, []);
+    router.replace("/dashboard");
+  }, [router]);
 
   const signup = useCallback(async (email: string, password: string) => {
     const res = await api<{ access_token: string; user: User }>("/auth/signup", { method: "POST", json: { email, password } });
