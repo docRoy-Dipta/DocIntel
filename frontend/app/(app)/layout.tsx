@@ -12,7 +12,7 @@ const NAV = [
   { href: "/documents", label: "Documents", icon: "documents" },
   { href: "/compare", label: "Compare", icon: "compare" },
   { href: "/search", label: "Search", icon: "search" },
-  { href: "/history", label: "History", icon: "history" },
+  { href: "/history", label: "History", icon: "history", adminOnly: true },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -27,13 +27,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (loading || !user) return <Spinner />;
 
+  const navItems = user.role === "admin" ? NAV : NAV.filter((n) => !n.adminOnly);
+
   return (
     <div className="min-h-screen bg-[#f5f7fa]">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-[#e2e5ec] transition-all duration-300 ${
-          collapsed ? "-translate-x-full" : "translate-x-0"
-        } sm:-translate-x-full sm:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-[#e2e5ec] transition-all duration-300 ${
+          collapsed ? "w-16" : "w-64"
+        }`}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b border-[#e2e5ec]">
           <Link href="/dashboard" className="flex items-center gap-2">
@@ -56,7 +58,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </button>
         </div>
         <nav className="mt-4 space-y-1 px-3">
-          {NAV.map((n) => {
+          {navItems.map((n) => {
             const active = pathname === n.href || pathname.startsWith(`${n.href}/`);
             return (
               <Link
@@ -120,7 +122,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className={`ml-0 sm:ml-64 ${collapsed ? "ml-0" : "ml-64"} transition-all duration-300 min-h-screen`}>
+      <div className={`ml-0 sm:ml-16 ${collapsed ? "ml-16" : "ml-64"} transition-all duration-300 min-h-screen`}>
         <header className="sticky top-0 z-30 border-b border-[#e2e5ec] bg-white/90 backdrop-blur-sm">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
