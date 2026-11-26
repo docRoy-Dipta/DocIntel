@@ -36,11 +36,11 @@ def test_downgrade_and_upgrade_roundtrip(
     if sys.platform == "win32":
         pytest.skip("pgserver is not supported by this Windows test configuration.")
 
-    import pgserver
+    from pgserver.postgres_server import get_server
 
     if os.environ.get("TEST_DATABASE_URL"):
         return  # do not run destructive downgrade on a shared database
-    server = pgserver.get_server(tmp_path_factory.mktemp("pg2"), cleanup_mode="stop")
+    server = get_server(tmp_path_factory.mktemp("pg2"), cleanup_mode="stop")
     url = server.get_uri().replace("postgresql://", "postgresql+psycopg://")
     assert alembic(url, "upgrade", "head").returncode == 0
     assert "ix_pages_fts" in server.psql("select indexname from pg_indexes where tablename='pages';")
