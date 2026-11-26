@@ -6,7 +6,6 @@
 """
 
 from __future__ import annotations
-from app.core.security import hash_password
 
 import os
 import random
@@ -18,6 +17,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+from app.core.security import hash_password
 
 os.environ.setdefault("APP_ENV", "test")
 os.environ.setdefault("CELERY_EAGER", "true")

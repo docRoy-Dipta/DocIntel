@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.api.deps import CurrentUser, get_db, reviewer, settings_dep, viewer
+from app.api.deps import CurrentUser, get_db, settings_dep, viewer
 from app.core.config import Settings
 from app.core.errors import NotFoundError
 from app.db.models import Correction, Document, LogicalDocument, ValidationResult

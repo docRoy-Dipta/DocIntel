@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import date
 from decimal import Decimal
-from typing import Any
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy import select, text
@@ -28,7 +28,10 @@ def health() -> dict[str, str]:
 
 
 @health_router.get("/health/ready")
-def ready(db: Session = Depends(get_db), settings: Settings = Depends(settings_dep)) -> dict[str, Any]:
+def ready(
+    db: Annotated[Session, Depends(get_db)],
+    settings: Settings = Depends(settings_dep),
+) -> dict[str, Any]:
     checks: dict[str, str] = {}
     try:
         db.execute(text("SELECT 1"))
